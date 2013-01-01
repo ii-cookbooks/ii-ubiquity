@@ -7,6 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 
+# We could modify them all here
 template "/usr/share/ubiquity-slideshow/slides/welcome.html" do
   source "slideshow/welcome.html.erb"
 end
@@ -16,11 +17,11 @@ cookbook_file "/usr/share/backgrounds/warty-final-ubuntu.png" do
   source "swedishChef.png"
 end
 
-
 service 'network-manager' do
   action :nothing
 end
 
+# We could put networks in a databag
 ['dd-wrt'].each do |ssid|
   template "/etc/NetworkManager/system-connections/#{ssid}" do
     mode 0600

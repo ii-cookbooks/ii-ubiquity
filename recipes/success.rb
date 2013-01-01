@@ -15,7 +15,7 @@ when /ThinkPad W520/
       rc = Chef::Util::FileEdit.new("/etc/default/grub")
       rc.search_file_replace_line(
         /^GRUB_CMDLINE_LINUX_DEFAULT=/,
-      'GRUB_CMDLINE_LINUX_DEFAULT="nox2apic nomodeset"'
+      'GRUB_CMDLINE_LINUX_DEFAULT="nox2apic"' #nomodeset may be needed
         )
       rc.write_file
     end
@@ -24,12 +24,20 @@ when /ThinkPad W520/
   package 'nvidia-settings-updates'
 end
 
-#fails with error: cannot find device for / (is /dev mounted?)
+
 # Guess we will have to put up with the no sparce file allowed error for now
-#execute 'update-grub' do
-#  action :nothing
-#  subscribes :run, 'ruby_block[edit etc grub.d 00_header]'
-#end
+
+#ISSUE: update-grub fails with error: cannot find device for / (is /dev mounted?
+#PROBLEM: needs /dev/sdX to exists
+#FIX: MAKEDEV
+execute 'MAKEDEV sd' do # for some reason /dev isn't fully populated yet
+  creates '/dev/sda'
+  cwd '/dev'
+end
+execute 'update-grub' do
+ action :nothing
+ subscribes :run, 'ruby_block[edit etc grub.d 00_header]'
+end
 
 # http://askubuntu.com/questions/100329/message-sparse-file-not-allowed-after-succesfull-install-without-swap-partitio
 ruby_block "edit etc grub.d 00_header" do
