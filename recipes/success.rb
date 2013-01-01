@@ -1,0 +1,48 @@
+#
+# Cookbook Name:: ii-ubiquity
+# Recipe:: default
+#
+# Copyright 2012, YOUR_COMPANY_NAME
+#
+# All rights reserved - Do Not Redistribute
+#
+
+# W520s need nox2apic and nomodeset
+case %x{dmidecode -s system-version}.chomp
+when /ThinkPad W520/
+  ruby_block "edit etc default grub" do
+    block do
+      rc = Chef::Util::FileEdit.new("/etc/default/grub")
+      rc.search_file_replace_line(
+        /^GRUB_CMDLINE_LINUX_DEFAULT=/,
+      'GRUB_CMDLINE_LINUX_DEFAULT="nox2apic nomodeset"'
+        )
+      rc.write_file
+    end
+  end
+  package 'nvidia-current-updates'
+  package 'nvidia-settings-updates'
+end
+
+#fails with error: cannot find device for / (is /dev mounted?)
+# Guess we will have to put up with the no sparce file allowed error for now
+#execute 'update-grub' do
+#  action :nothing
+#  subscribes :run, 'ruby_block[edit etc grub.d 00_header]'
+#end
+
+# http://askubuntu.com/questions/100329/message-sparse-file-not-allowed-after-succesfull-install-without-swap-partitio
+ruby_block "edit etc grub.d 00_header" do
+  block do
+    rc = Chef::Util::FileEdit.new("/etc/grub.d/00_header")
+    rc.search_file_replace_line(
+      /have_grubenv}/,
+      '#  if [ -n "\${have_grubenv}" ]; then if [ -z "\${boot_once}" ]; then save_env recordfail; fi; fi'
+      )
+    rc.write_file
+  end
+end
+
+# I think these must go into the initrd
+#file "/lib/plymouth/themes/ubuntu-logo/ubuntu_logo16.png"
+#file "/lib/plymouth/themes/ubuntu-logo/ubuntu_logo.png"
