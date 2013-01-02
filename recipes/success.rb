@@ -42,7 +42,8 @@ end
 # http://askubuntu.com/questions/100329/message-sparse-file-not-allowed-after-succesfull-install-without-swap-partitio
 ruby_block "edit etc grub.d 00_header" do
   block do
-    rc = Chef::Util::FileEdit.new("/etc/grub.d/00_header")
+    # Because Chef::Util::FileEdit drops a filename.bak file, we had to modify it
+    rc = Chef::Util::FileEditNobak.new("/etc/grub.d/00_header")
     rc.search_file_replace_line(
       /have_grubenv}/,
       '#  if [ -n "\${have_grubenv}" ]; then if [ -z "\${boot_once}" ]; then save_env recordfail; fi; fi'
