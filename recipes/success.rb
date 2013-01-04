@@ -24,7 +24,6 @@ when /ThinkPad W520/
   package 'nvidia-settings-updates'
 end
 
-
 # Guess we will have to put up with the no sparce file allowed error for now
 
 #ISSUE: update-grub fails with error: cannot find device for / (is /dev mounted?
@@ -55,3 +54,9 @@ end
 # I think these must go into the initrd
 #file "/lib/plymouth/themes/ubuntu-logo/ubuntu_logo16.png"
 #file "/lib/plymouth/themes/ubuntu-logo/ubuntu_logo.png"
+# I'd like to be able to run-chef-solo as the normal user
+template "/usr/local/bin/run-chef-solo" do
+  source "run-chef-solo"
+  mode 0755
+end
+
