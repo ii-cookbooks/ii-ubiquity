@@ -7,6 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 
-template "/usr/share/ubiquity-slideshow/slides/usc.html" do
-  source "slideshow/usc.html.erb"
-end
+include_recipe "#{cookbook_name}::ohai-plugins"
+# why Ubiquity mounts swap on disks it might be partitioning is beyond me...
+include_recipe "#{cookbook_name}::unmount_swap"
+include_recipe "#{cookbook_name}::format_disk"
