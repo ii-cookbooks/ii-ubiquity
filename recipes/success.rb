@@ -8,6 +8,7 @@
 #
 
 include_recipe "#{cookbook_name}::ohai-plugins"
+include_recipe "#{cookbook_name}::btrfs-grub"
 
 # https://github.com/bigbosst/ohaiplugins#usage
 
@@ -17,10 +18,11 @@ video_cards = node['pci']['devices'].find_all {|d| d['type'] =~ /VGA compatible 
 video_cards.each do |vc|
   case vc['vendor']
   when /nvidia/i
-    package 'nvidia-current-updates'
-    package 'nvidia-settings-updates'
+    # we also need internet to retrieve nvidia packages
     case vc['subvendor']
     when /lenovo/i
+      package 'nvidia-current-updates'
+      package 'nvidia-settings-updates'
     end
   end
 end
