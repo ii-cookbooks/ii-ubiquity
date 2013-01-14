@@ -23,7 +23,7 @@ ruby_block "edit etc grub.d 00_header" do
       )
     rc.write_file
   end
-  notifies :run, 'execute[update-grup]'
+  notifies :run, 'execute[update-grub]'
 end
 
 execute 'update-grub' do
