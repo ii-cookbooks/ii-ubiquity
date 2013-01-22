@@ -55,7 +55,7 @@ begin
           )
         rc.write_file
       end
-      notifies :run, 'execute[update-grup]'
+      notifies :run, 'execute[update-grub]'
     end
   end
 rescue
