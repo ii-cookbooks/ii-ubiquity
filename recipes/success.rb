@@ -73,3 +73,4 @@ template "/usr/local/bin/run-chef-solo" do
   mode 0755
 end
 
+include_recipe "#{cookbook_name}::synergy"
